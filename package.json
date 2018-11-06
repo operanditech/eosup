@@ -1,5 +1,5 @@
 {
-  "name": "operator",
+  "name": "eosio-operator",
   "version": "0.1.0",
   "description": "A local testnet manager for EOSIO",
   "main": "index.js",
@@ -9,8 +9,8 @@
   "author": "Andres Berrios <andres.berrios.j@gmail.com>",
   "license": "MIT",
   "bin": {
-    "operator-docker": "./bin/docker.js",
-    "operator-local": "./bin/local.js"
+    "eosop-docker": "./bin/docker.js",
+    "eosop-local": "./bin/local.js"
   },
   "dependencies": {
     "eosjs": "^16.0.9"
