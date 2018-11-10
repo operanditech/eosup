@@ -33,7 +33,6 @@ async function start() {
     --plugin eosio::chain_api_plugin \
     --plugin eosio::history_api_plugin \
     --plugin eosio::http_plugin \
-    --plugin eosio::statetrack_plugin \
     --http-server-address=0.0.0.0:8888 \
     --http-validate-host=false \
     --access-control-allow-origin=* \
