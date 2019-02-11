@@ -2,7 +2,7 @@
   "name": "eosio-operator",
   "version": "0.1.7",
   "description": "A local testnet manager for EOSIO",
-  "main": "index.js",
+  "main": "lib/operator.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +13,8 @@
     "eosop-local": "./bin/local.js"
   },
   "dependencies": {
-    "eosjs": "^16.0.9"
+    "eosjs": "^20.0.0-beta3",
+    "node-fetch": "^2.3.0"
   },
   "eslintConfig": {
     "extends": "standard",
