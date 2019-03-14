@@ -3,6 +3,7 @@
 const { DockerTestnet } = require('../lib/operator')
 
 const version = process.argv[2] || '1.5.2'
+const extraParams = process.argv.slice(3).join(' ')
 
 main().catch(error => {
   console.error(error)
@@ -12,14 +13,5 @@ main().catch(error => {
 async function main() {
   const testnet = new DockerTestnet({ version, printOutput: true })
   await testnet.setup()
-  await testnet.start()
-  const exitHandler = () => {
-    console.log('Stopping testnet...')
-    testnet.stop().finally(() => {
-      process.exit()
-    })
-  }
-  process.on('SIGINT', exitHandler)
-  process.on('SIGTERM', exitHandler)
-  await testnet.tail()
+  await testnet.start({ detached: false, extraParams })
 }
