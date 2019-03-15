@@ -1,6 +1,6 @@
 {
   "name": "eosio-operator",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A local testnet manager for EOSIO",
   "main": "lib/operator.js",
   "scripts": {
