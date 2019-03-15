@@ -13,5 +13,12 @@ main().catch(error => {
 async function main() {
   const testnet = new DockerTestnet({ version, printOutput: true })
   await testnet.setup()
-  await testnet.start({ detached: false, extraParams })
+  const exitHandler = () => {
+    testnet.stop().finally(() => {
+      process.exit()
+    })
+  }
+  process.on('SIGINT', exitHandler)
+  process.on('SIGTERM', exitHandler)
+  await testnet.start({ extraParams })
 }
