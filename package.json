@@ -1,6 +1,6 @@
 {
   "name": "eosio-operator",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A local testnet manager for EOSIO",
   "main": "lib/operator.js",
   "scripts": {
@@ -9,7 +9,8 @@
   "author": "Andres Berrios <andres.berrios.j@gmail.com>",
   "license": "MIT",
   "bin": {
-    "eosop": "./bin/docker.js"
+    "eosop": "./bin/docker.js",
+    "eosop-cpp": "./bin/compile.js"
   },
   "dependencies": {
     "dockerode": "^2.5.8",
