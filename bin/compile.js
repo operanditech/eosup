@@ -8,7 +8,7 @@ main().catch(error => {
 })
 
 async function main() {
-  const compiler = new Compiler()
+  const compiler = new Compiler({ printOutput: true })
   await compiler.setup()
   await compiler.compile(process.argv[2], process.argv[3], process.argv[4], {
     extraParams: process.argv[5] || ''
