@@ -15,7 +15,7 @@ the executable from your `package.json` scripts section.
 Install globally with `npm install -g eosio-operator`. Then simply
 run `eosio-operator` anywhere.
 
-## Inside a project
+### Inside a project
 
 Install as a dependency of your project with `npm install eosio-operator`.
 Then, run `eosio-operator` from your `package.json` scripts, like this:
