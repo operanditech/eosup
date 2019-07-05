@@ -72,11 +72,13 @@ prog
       await testnet.setup()
       testnet.loadExitHandler()
       await testnet.start()
-      try {
-        await execa.command(opts.callback, { stdio: 'inherit', shell: true })
-      } catch (error) {
-        await testnet.stop()
-        throw error
+      if (opts.callback) {
+        try {
+          await execa.command(opts.callback, { stdio: 'inherit', shell: true })
+        } catch (error) {
+          await testnet.stop()
+          throw error
+        }
       }
     })
   )
