@@ -1,6 +1,6 @@
 {
   "name": "eosio-operator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
   "main": "lib/operator.js",
   "scripts": {
