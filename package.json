@@ -1,6 +1,6 @@
 {
   "name": "eosio-operator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
   "scripts": {
     "test": "mocha \"test/*.spec.js\" --timeout 30000"
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "caporal": "^1.3.0",
-    "dockerator": "0.3.1",
+    "dockerator": "0.3.2",
     "dockerode": "^2.5.8",
     "eosjs": "^20.0.0",
     "event-stream": "^4.0.1",
