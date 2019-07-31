@@ -2,9 +2,8 @@
   "name": "eosio-operator",
   "version": "1.0.2",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
-  "main": "lib/operator.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"test/*.spec.js\" --timeout 30000"
   },
   "author": "Andres Berrios <andres.berrios.j@gmail.com>",
   "repository": {
@@ -12,6 +11,13 @@
     "url": "https://github.com/operanditech/operator.git"
   },
   "license": "MIT",
+  "files": [
+    "lib",
+    "bin",
+    "image",
+    "systemContracts"
+  ],
+  "main": "lib/operator.js",
   "bin": {
     "eosio-operator": "./bin/eosio-operator.js"
   },
@@ -43,6 +49,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0"
+    "eslint-plugin-standard": "^4.0.0",
+    "mocha": "^6.2.0"
   }
 }
