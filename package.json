@@ -7,18 +7,22 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Andres Berrios <andres.berrios.j@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/operanditech/operator.git"
+  },
   "license": "MIT",
   "bin": {
     "eosio-operator": "./bin/eosio-operator.js"
   },
   "dependencies": {
-    "caporal": "^1.2.0",
+    "caporal": "^1.3.0",
     "dockerator": "0.3.1",
     "dockerode": "^2.5.8",
     "eosjs": "^20.0.0",
     "event-stream": "^4.0.1",
-    "execa": "^2.0.2",
-    "node-fetch": "^2.3.0"
+    "execa": "^2.0.3",
+    "node-fetch": "^2.6.0"
   },
   "eslintConfig": {
     "extends": "standard",
@@ -34,11 +38,11 @@
     }
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0"
   }
 }
