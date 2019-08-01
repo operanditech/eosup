@@ -63,10 +63,22 @@ prog
     '-c, --callback <command>',
     'Command to run as soon as the testnet is operational (e.g. for loading seed data).'
   )
+  .option(
+    '-s, --stop',
+    'Stop the testnet as soon as the callback command is done (e.g. for running tests).',
+    prog.BOOLEAN,
+    false
+  )
+  .option(
+    '-q, --quiet',
+    'Do not print nodeos output to stdout.',
+    prog.BOOLEAN,
+    false
+  )
   .action(
     wrapAsync(async (args, opts, logger) => {
       const testnet = new Testnet({
-        printOutput: true,
+        printOutput: !opts.quiet,
         extraParams: opts.extraParams
       })
       await testnet.setup()
@@ -78,6 +90,9 @@ prog
         } catch (error) {
           await testnet.stop()
           throw error
+        }
+        if (opts.stop) {
+          await testnet.stop()
         }
       }
     })
