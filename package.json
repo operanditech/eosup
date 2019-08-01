@@ -1,6 +1,6 @@
 {
-  "name": "eosio-operator",
-  "version": "1.0.3",
+  "name": "eosup",
+  "version": "1.0.0",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
   "scripts": {
     "test": "mocha \"test/*.spec.js\" --timeout 30000"
@@ -8,7 +8,7 @@
   "author": "Andres Berrios <andres.berrios.j@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/operanditech/operator.git"
+    "url": "https://github.com/operanditech/eosup.git"
   },
   "license": "MIT",
   "files": [
@@ -17,9 +17,9 @@
     "image",
     "systemContracts"
   ],
-  "main": "lib/operator.js",
+  "main": "lib/index.js",
   "bin": {
-    "eosio-operator": "./bin/eosio-operator.js"
+    "eosup": "./bin/eosup.js"
   },
   "dependencies": {
     "caporal": "^1.3.0",

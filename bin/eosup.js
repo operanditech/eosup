@@ -2,9 +2,9 @@
 
 const Docker = require('dockerode')
 const execa = require('execa')
-const version = require('../package.json').version
+const { version } = require('../package.json')
 const Compiler = require('../lib/compiler')
-const { DockerTestnet } = require('../lib/operator')
+const Testnet = require('../lib/testnet')
 const imageTag = require('../lib/imageTag')
 
 const prog = require('caporal')
@@ -65,7 +65,7 @@ prog
   )
   .action(
     wrapAsync(async (args, opts, logger) => {
-      const testnet = new DockerTestnet({
+      const testnet = new Testnet({
         printOutput: true,
         extraParams: opts.extraParams
       })
