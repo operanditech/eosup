@@ -1,6 +1,6 @@
 {
   "name": "eosup",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
   "scripts": {
     "test": "mocha \"test/*.spec.js\" --timeout 30000"
