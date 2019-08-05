@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules"]
+}

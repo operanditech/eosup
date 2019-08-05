@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-const Docker = require('dockerode')
-const execa = require('execa')
-const { version } = require('../package.json')
-const Compiler = require('../lib/compiler')
-const Testnet = require('../lib/testnet')
-const imageTag = require('../lib/imageTag')
+import Docker from 'dockerode'
+import execa from 'execa'
+import { version } from '../../package.json'
+import Compiler from '../compiler'
+import imageTag from '../imageTag'
+import Testnet from '../testnet'
 
-const prog = require('caporal')
+import prog from 'caporal'
 prog
   .version(version)
   .command(
@@ -100,9 +100,9 @@ prog
 
 prog.parse(process.argv)
 
-function wrapAsync(func) {
-  return (...args) => {
-    func(...args).catch(error => {
+function wrapAsync(func: (args: any, opts: any, logger: any) => any) {
+  return (args: any, opts: any, logger: any) => {
+    func(args, opts, logger).catch((error: Error) => {
       console.error(error)
       process.exit(1)
     })

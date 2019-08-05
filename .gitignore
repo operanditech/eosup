@@ -3,3 +3,4 @@ data
 .vscode
 test/contract.wasm
 test/contract.abi
+dist

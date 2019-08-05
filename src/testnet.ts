@@ -1,17 +1,22 @@
-const path = require('path')
-const Dockerator = require('dockerator')
-const es = require('event-stream')
+import Dockerator from 'dockerator'
+import es from 'event-stream'
+import path from 'path'
 
-const imageTag = require('./imageTag')
-const EosUp = require('./eosup')
+import { Writable } from 'stream'
+import EosUp from './eosup'
+import imageTag from './imageTag'
 
-class Testnet extends Dockerator {
+export default class Testnet extends Dockerator {
+  public operational: boolean
+  public eosup: EosUp
+  private markOperational?: () => void
+
   constructor({
     printOutput = false,
     extraParams = '',
     eosup = new EosUp()
   } = {}) {
-    const stdout = es.mapSync(data => {
+    const stdout = (es.mapSync((data: string) => {
       if (!this.operational) {
         if (
           data.includes('producer_plugin.cpp') &&
@@ -20,11 +25,13 @@ class Testnet extends Dockerator {
           data.includes('#2 @ ')
         ) {
           this.operational = true
-          this.markOperational()
+          if (this.markOperational) {
+            this.markOperational()
+          }
         }
       }
       return data
-    })
+    }) as any) as Writable
     if (printOutput) {
       stdout.pipe(process.stdout)
     }
@@ -53,13 +60,15 @@ class Testnet extends Dockerator {
     this.operational = false
     this.eosup = eosup
   }
-  async setup() {
+
+  public async setup() {
     await super.setup({
       context: path.resolve(__dirname, '..', 'image'),
       src: ['Dockerfile']
     })
   }
-  async start() {
+
+  public async start() {
     await super.start()
     try {
       await new Promise((resolve, reject) => {
@@ -79,5 +88,3 @@ class Testnet extends Dockerator {
     }
   }
 }
-
-module.exports = Testnet

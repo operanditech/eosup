@@ -1,0 +1,20 @@
+{
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended",
+    "tslint-plugin-prettier",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "prettier": [true, { "singleQuote": true, "semi": false }],
+    "no-return-await": true,
+    "max-classes-per-file": [false, 1],
+    "object-literal-sort-keys": false,
+    "interface-name": false,
+    "no-console": [true, "log", "info", "warn"]
+  },
+  "linterOptions": {
+    "exclude": ["**/node_modules/**", "**/dist/**"],
+    "format": "codeFrame"
+  }
+}
