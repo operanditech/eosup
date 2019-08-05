@@ -1,6 +1,6 @@
-const { describe, it } = require('mocha')
-const fs = require('fs')
-const Compiler = require('../lib/compiler')
+import fs from 'fs'
+import { describe, it } from 'mocha'
+import Compiler from '../src/compiler'
 
 describe('Compiler', () => {
   it('should compile', async () => {
