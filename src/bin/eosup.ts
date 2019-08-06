@@ -2,10 +2,15 @@
 
 import Docker from 'dockerode'
 import execa from 'execa'
-import { version } from '../../package.json'
+import fs from 'fs'
+import path from 'path'
 import Compiler from '../compiler'
 import imageTag from '../imageTag'
 import Testnet from '../testnet'
+
+const { version } = JSON.parse((fs.readFileSync(
+  path.resolve(__dirname, '../../package.json')
+) as any) as string)
 
 import prog from 'caporal'
 prog
