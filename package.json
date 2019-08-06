@@ -1,6 +1,6 @@
 {
   "name": "eosup",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A cross-platform local testnet manager and smart contract compiler for EOSIO",
   "keywords": [
     "eosio",
@@ -29,12 +29,13 @@
   "license": "MIT",
   "files": [
     "dist",
+    "bin",
     "image",
     "systemContracts"
   ],
   "main": "dist/index.js",
   "bin": {
-    "eosup": "./dist/bin/eosup.js"
+    "eosup": "./bin/eosup.js"
   },
   "dependencies": {
     "caporal": "^1.3.0",
