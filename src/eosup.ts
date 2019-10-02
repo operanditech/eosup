@@ -59,35 +59,32 @@ export default class EosUp {
     }
   }
 
-  public createAccount(name: string, publicKey = EosUp.keypair.public) {
+  public async createAccount(name: string, publicKey = EosUp.keypair.public) {
     const auth = {
       threshold: 1,
       keys: [{ weight: 1, key: publicKey }],
       accounts: [],
       waits: []
     }
-    return new Transaction(
-      {
-        account: 'eosio',
-        name: 'newaccount',
-        authorization: [
-          {
-            actor: 'eosio',
-            permission: 'active'
-          }
-        ],
-        data: {
-          creator: 'eosio',
-          name,
-          owner: auth,
-          active: auth
+    return this.morph.transact({
+      account: 'eosio',
+      name: 'newaccount',
+      authorization: [
+        {
+          actor: 'eosio',
+          permission: 'active'
         }
-      },
-      this.morph
-    )
+      ],
+      data: {
+        creator: 'eosio',
+        name,
+        owner: auth,
+        active: auth
+      }
+    })
   }
 
-  public setContract(account: string, contractPath: string) {
+  public async setContract(account: string, contractPath: string) {
     const wasm = fs.readFileSync(contractPath)
     const abiBuffer = fs.readFileSync(
       path.format({
@@ -115,41 +112,38 @@ export default class EosUp {
     })
     abiDefinition.serialize(buffer, abi)
 
-    return new Transaction(
-      [
-        {
-          account: 'eosio',
-          name: 'setcode',
-          authorization: [
-            {
-              actor: account,
-              permission: 'active'
-            }
-          ],
-          data: {
-            account,
-            vmtype: 0,
-            vmversion: 0,
-            code: wasm
+    return this.morph.transact([
+      {
+        account: 'eosio',
+        name: 'setcode',
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
           }
-        },
-        {
-          account: 'eosio',
-          name: 'setabi',
-          authorization: [
-            {
-              actor: account,
-              permission: 'active'
-            }
-          ],
-          data: {
-            account,
-            abi: buffer.asUint8Array()
-          }
+        ],
+        data: {
+          account,
+          vmtype: 0,
+          vmversion: 0,
+          code: wasm
         }
-      ],
-      this.morph
-    )
+      },
+      {
+        account: 'eosio',
+        name: 'setabi',
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
+          }
+        ],
+        data: {
+          account,
+          abi: buffer.asUint8Array()
+        }
+      }
+    ])
   }
 
   public async hasCodeActivePermission(account: string, contract: string) {
@@ -173,37 +167,34 @@ export default class EosUp {
       permission: { actor: contract, permission: 'eosio.code' },
       weight: auth.threshold
     })
-    return new Transaction(
-      {
-        account: 'eosio',
-        name: 'updateauth',
-        authorization: [
-          {
-            actor: account,
-            permission: 'active'
-          }
-        ],
-        data: {
-          account,
-          permission: 'active',
-          parent: 'owner',
-          auth
+    return this.morph.transact({
+      account: 'eosio',
+      name: 'updateauth',
+      authorization: [
+        {
+          actor: account,
+          permission: 'active'
         }
-      },
-      this.morph
-    )
+      ],
+      data: {
+        account,
+        permission: 'active',
+        parent: 'owner',
+        auth
+      }
+    })
   }
 
   public async loadSystemContracts() {
     await this.setContract(
       'eosio',
       path.join(__dirname, '../systemContracts/eosio.bios.wasm')
-    ).send()
-    await this.createAccount('eosio.token').send()
+    )
+    await this.createAccount('eosio.token')
     await this.setContract(
       'eosio.token',
       path.join(__dirname, '../systemContracts/eosio.token.wasm')
-    ).send()
+    )
     await this.morph.transact({
       account: 'eosio.token',
       name: 'create',
@@ -220,8 +211,12 @@ export default class EosUp {
     })
   }
 
-  public issueEos(account: string, amount: string, memo = 'Issued funds') {
-    return new Transaction({
+  public async issueEos(
+    account: string,
+    amount: string,
+    memo = 'Issued funds'
+  ) {
+    return this.morph.transact({
       account: 'eosio.token',
       name: 'issue',
       authorization: [{ actor: 'eosio.token', permission: 'active' }],
@@ -233,25 +228,22 @@ export default class EosUp {
     })
   }
 
-  public transfer(
+  public async transfer(
     from: FlexAuth,
     to: string,
     quantity: { quantity: string; contract: string },
     memo = ''
   ) {
-    return new Transaction(
-      {
-        account: quantity.contract,
-        name: 'transfer',
-        authorization: from,
-        data: {
-          from: Transaction.extractAccountName(from),
-          to,
-          quantity: quantity.quantity,
-          memo
-        }
-      },
-      this.morph
-    )
+    return this.morph.transact({
+      account: quantity.contract,
+      name: 'transfer',
+      authorization: from,
+      data: {
+        from: Transaction.extractAccountName(from),
+        to,
+        quantity: quantity.quantity,
+        memo
+      }
+    })
   }
 }
