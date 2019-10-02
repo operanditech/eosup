@@ -40,15 +40,15 @@ export default class EosUp {
     })
   }
 
-  public eos: Morpheos
+  public morph: Morpheos
 
   constructor({ eos }: { eos?: Api | Morpheos } = {}) {
     if (eos) {
-      this.eos = new Morpheos(eos)
+      this.morph = new Morpheos(eos)
     } else {
       const signatureProvider = new JsSignatureProvider([EosUp.keypair.private])
       const rpc = new JsonRpc('http://localhost:8888', { fetch })
-      this.eos = new Morpheos(
+      this.morph = new Morpheos(
         new Api({
           rpc,
           signatureProvider,
@@ -66,7 +66,7 @@ export default class EosUp {
       accounts: [],
       waits: []
     }
-    return this.eos.transact({
+    return this.morph.transact({
       account: 'eosio',
       name: 'newaccount',
       authorization: [
@@ -95,7 +95,7 @@ export default class EosUp {
     )
 
     const abi: { [key: string]: any } = JSON.parse((abiBuffer as any) as string)
-    const abiDefinition = this.eos.eos.abiTypes.get('abi_def')
+    const abiDefinition = this.morph.eos.abiTypes.get('abi_def')
     if (!abiDefinition) {
       throw new Error('Missing ABI definition')
     }
@@ -107,12 +107,12 @@ export default class EosUp {
     }
 
     const buffer = new Serialize.SerialBuffer({
-      textEncoder: this.eos.eos.textEncoder,
-      textDecoder: this.eos.eos.textDecoder
+      textEncoder: this.morph.eos.textEncoder,
+      textDecoder: this.morph.eos.textDecoder
     })
     abiDefinition.serialize(buffer, abi)
 
-    return this.eos.transact([
+    return this.morph.transact([
       {
         account: 'eosio',
         name: 'setcode',
@@ -147,9 +147,9 @@ export default class EosUp {
   }
 
   public async hasCodeActivePermission(account: string, contract: string) {
-    const auth = (await this.eos.eos.rpc.get_account(account)).permissions.find(
-      (p: any) => p.perm_name === 'active'
-    ).required_auth
+    const auth = (await this.morph.eos.rpc.get_account(
+      account
+    )).permissions.find((p: any) => p.perm_name === 'active').required_auth
     const entry = auth.accounts.find(
       (a: any) =>
         a.permission.actor === contract &&
@@ -160,14 +160,14 @@ export default class EosUp {
   }
 
   public async giveCodeActivePermission(account: string, contract: string) {
-    const auth = (await this.eos.eos.rpc.get_account(account)).permissions.find(
-      (p: any) => p.perm_name === 'active'
-    ).required_auth
+    const auth = (await this.morph.eos.rpc.get_account(
+      account
+    )).permissions.find((p: any) => p.perm_name === 'active').required_auth
     auth.accounts.push({
       permission: { actor: contract, permission: 'eosio.code' },
       weight: auth.threshold
     })
-    return this.eos.transact({
+    return this.morph.transact({
       account: 'eosio',
       name: 'updateauth',
       authorization: [
@@ -195,7 +195,7 @@ export default class EosUp {
       'eosio.token',
       path.join(__dirname, '../systemContracts/eosio.token.wasm')
     )
-    await this.eos.transact({
+    await this.morph.transact({
       account: 'eosio.token',
       name: 'create',
       authorization: [
