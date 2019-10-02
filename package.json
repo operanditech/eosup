@@ -44,6 +44,7 @@
     "eosjs": "^20.0.0",
     "event-stream": "^4.0.1",
     "execa": "^2.0.3",
+    "morpheos": "^2.3.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {

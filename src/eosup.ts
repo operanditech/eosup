@@ -8,6 +8,8 @@ import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig'
 import fetch from 'node-fetch'
 import { TextDecoder, TextEncoder } from 'util'
 
+import { Morpheos } from 'morpheos'
+
 import Compiler from './compiler'
 
 export default class EosUp {
@@ -38,20 +40,22 @@ export default class EosUp {
     })
   }
 
-  public eos: Api
+  public eos: Morpheos
 
-  constructor({ eos }: { eos?: Api } = {}) {
+  constructor({ eos }: { eos?: Api | Morpheos } = {}) {
     if (eos) {
-      this.eos = eos
+      this.eos = new Morpheos(eos)
     } else {
       const signatureProvider = new JsSignatureProvider([EosUp.keypair.private])
       const rpc = new JsonRpc('http://localhost:8888', { fetch })
-      this.eos = new Api({
-        rpc,
-        signatureProvider,
-        textEncoder: new TextEncoder() as any,
-        textDecoder: new TextDecoder() as any
-      })
+      this.eos = new Morpheos(
+        new Api({
+          rpc,
+          signatureProvider,
+          textEncoder: new TextEncoder() as any,
+          textDecoder: new TextDecoder() as any
+        })
+      )
     }
   }
 
@@ -62,29 +66,22 @@ export default class EosUp {
       accounts: [],
       waits: []
     }
-    return this.eos.transact(
-      {
-        actions: [
-          {
-            account: 'eosio',
-            name: 'newaccount',
-            authorization: [
-              {
-                actor: 'eosio',
-                permission: 'active'
-              }
-            ],
-            data: {
-              creator: 'eosio',
-              name,
-              owner: auth,
-              active: auth
-            }
-          }
-        ]
-      },
-      { blocksBehind: 0, expireSeconds: 60 }
-    )
+    return this.eos.transact({
+      account: 'eosio',
+      name: 'newaccount',
+      authorization: [
+        {
+          actor: 'eosio',
+          permission: 'active'
+        }
+      ],
+      data: {
+        creator: 'eosio',
+        name,
+        owner: auth,
+        active: auth
+      }
+    })
   }
 
   public async setContract(account: string, contractPath: string) {
@@ -98,7 +95,7 @@ export default class EosUp {
     )
 
     const abi: { [key: string]: any } = JSON.parse((abiBuffer as any) as string)
-    const abiDefinition = this.eos.abiTypes.get('abi_def')
+    const abiDefinition = this.eos.eos.abiTypes.get('abi_def')
     if (!abiDefinition) {
       throw new Error('Missing ABI definition')
     }
@@ -110,52 +107,47 @@ export default class EosUp {
     }
 
     const buffer = new Serialize.SerialBuffer({
-      textEncoder: this.eos.textEncoder,
-      textDecoder: this.eos.textDecoder
+      textEncoder: this.eos.eos.textEncoder,
+      textDecoder: this.eos.eos.textDecoder
     })
     abiDefinition.serialize(buffer, abi)
 
-    return this.eos.transact(
+    return this.eos.transact([
       {
-        actions: [
+        account: 'eosio',
+        name: 'setcode',
+        authorization: [
           {
-            account: 'eosio',
-            name: 'setcode',
-            authorization: [
-              {
-                actor: account,
-                permission: 'active'
-              }
-            ],
-            data: {
-              account,
-              vmtype: 0,
-              vmversion: 0,
-              code: wasm
-            }
-          },
-          {
-            account: 'eosio',
-            name: 'setabi',
-            authorization: [
-              {
-                actor: account,
-                permission: 'active'
-              }
-            ],
-            data: {
-              account,
-              abi: buffer.asUint8Array()
-            }
+            actor: account,
+            permission: 'active'
           }
-        ]
+        ],
+        data: {
+          account,
+          vmtype: 0,
+          vmversion: 0,
+          code: wasm
+        }
       },
-      { blocksBehind: 0, expireSeconds: 60 }
-    )
+      {
+        account: 'eosio',
+        name: 'setabi',
+        authorization: [
+          {
+            actor: account,
+            permission: 'active'
+          }
+        ],
+        data: {
+          account,
+          abi: buffer.asUint8Array()
+        }
+      }
+    ])
   }
 
   public async hasCodeActivePermission(account: string, contract: string) {
-    const auth = (await this.eos.rpc.get_account(account)).permissions.find(
+    const auth = (await this.eos.eos.rpc.get_account(account)).permissions.find(
       (p: any) => p.perm_name === 'active'
     ).required_auth
     const entry = auth.accounts.find(
@@ -168,36 +160,29 @@ export default class EosUp {
   }
 
   public async giveCodeActivePermission(account: string, contract: string) {
-    const auth = (await this.eos.rpc.get_account(account)).permissions.find(
+    const auth = (await this.eos.eos.rpc.get_account(account)).permissions.find(
       (p: any) => p.perm_name === 'active'
     ).required_auth
     auth.accounts.push({
       permission: { actor: contract, permission: 'eosio.code' },
       weight: auth.threshold
     })
-    return this.eos.transact(
-      {
-        actions: [
-          {
-            account: 'eosio',
-            name: 'updateauth',
-            authorization: [
-              {
-                actor: account,
-                permission: 'active'
-              }
-            ],
-            data: {
-              account,
-              permission: 'active',
-              parent: 'owner',
-              auth
-            }
-          }
-        ]
-      },
-      { blocksBehind: 0, expireSeconds: 60 }
-    )
+    return this.eos.transact({
+      account: 'eosio',
+      name: 'updateauth',
+      authorization: [
+        {
+          actor: account,
+          permission: 'active'
+        }
+      ],
+      data: {
+        account,
+        permission: 'active',
+        parent: 'owner',
+        auth
+      }
+    })
   }
 
   public async loadSystemContracts() {
@@ -210,26 +195,19 @@ export default class EosUp {
       'eosio.token',
       path.join(__dirname, '../systemContracts/eosio.token.wasm')
     )
-    await this.eos.transact(
-      {
-        actions: [
-          {
-            account: 'eosio.token',
-            name: 'create',
-            authorization: [
-              {
-                actor: 'eosio.token',
-                permission: 'active'
-              }
-            ],
-            data: {
-              issuer: 'eosio.token',
-              maximum_supply: '1000000000.0000 EOS'
-            }
-          }
-        ]
-      },
-      { blocksBehind: 0, expireSeconds: 60 }
-    )
+    await this.eos.transact({
+      account: 'eosio.token',
+      name: 'create',
+      authorization: [
+        {
+          actor: 'eosio.token',
+          permission: 'active'
+        }
+      ],
+      data: {
+        issuer: 'eosio.token',
+        maximum_supply: '1000000000.0000 EOS'
+      }
+    })
   }
 }
