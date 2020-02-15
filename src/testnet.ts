@@ -49,6 +49,7 @@ export default class Testnet extends Dockerator {
         --plugin eosio::http_plugin \
         --plugin eosio::chain_api_plugin \
         --http-server-address=0.0.0.0:8888 \
+        --state-history-endpoint=0.0.0.0:8080 \
         --access-control-allow-origin=* \
         --contracts-console \
         --verbose-http-errors \

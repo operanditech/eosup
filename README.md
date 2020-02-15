@@ -32,8 +32,8 @@ Then, run `eosup` from your `package.json` scripts, like this:
 Run `eosup --help` to get info on the specific commands
 and options.
 
-In the current version, this tool uses EOSIO version 1.8.2 and
-eosio.cdt version 1.6.2. Block.one doesn't provide the packages
+In the current version, this tool uses EOSIO version 1.8.9 and
+eosio.cdt version 1.7.0. Block.one doesn't provide the packages
 in a package registry that allows for simple version selection yet,
 so for using other versions, a new release of eosup will be
 necessary. Please open an issue in this repository if you require
