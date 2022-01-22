@@ -45,7 +45,7 @@
     "event-stream": "^4.0.1",
     "execa": "^2.0.3",
     "morpheos": "^2.3.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^3.1.1"
   },
   "devDependencies": {
     "@types/dockerode": "^2.5.20",
